@@ -3,6 +3,7 @@ import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import AdminPanel from '@/components/AdminPanel';
 
 const HERO = 'https://cdn.poehali.dev/projects/7414a8b7-2ca5-4b12-953c-308219850e86/files/d1c103bc-6f72-4bf7-abd7-819adc14fe1c.jpg';
 
@@ -103,7 +104,6 @@ const Index = () => {
   const [ticketForm, setTicketForm] = useState({ title: '', category: 'Общие вопросы', text: '' });
   const [ticketSent, setTicketSent] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
-  const [adminTab, setAdminTab] = useState<'products' | 'users' | 'promos' | 'balance' | 'withdraw'>('products');
 
   const filtered = category === 'Все' ? PRODUCTS : PRODUCTS.filter((p) => p.category === category);
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
@@ -563,167 +563,7 @@ const Index = () => {
       )}
 
       {/* ===== АДМИН ПАНЕЛЬ ===== */}
-      {active === 'Админ панель' && (
-        <section className="container py-12">
-          <div className="flex items-center gap-3 mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold">Админ панель</h2>
-            <span className="px-2 py-0.5 text-[10px] font-display tracking-widest bg-rust/20 text-rust border border-rust/30 clip-corner">ADMIN</span>
-          </div>
-
-          {/* Admin nav */}
-          <div className="flex flex-wrap gap-2 mb-8">
-            {([
-              { key: 'products', label: 'Товары', icon: 'Package' },
-              { key: 'users', label: 'Пользователи', icon: 'Users' },
-              { key: 'promos', label: 'Промокоды', icon: 'Tag' },
-              { key: 'balance', label: 'Балансы', icon: 'Wallet' },
-              { key: 'withdraw', label: 'Выводы', icon: 'ArrowUpRight' },
-            ] as { key: typeof adminTab; label: string; icon: string }[]).map((t) => (
-              <button
-                key={t.key}
-                onClick={() => setAdminTab(t.key)}
-                className={`flex items-center gap-2 px-4 py-2 text-sm font-display uppercase tracking-wider border clip-corner transition-colors ${
-                  adminTab === t.key ? 'bg-rust border-rust text-foreground' : 'bg-card/50 border-border text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                <Icon name={t.icon} size={14} />
-                {t.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Products tab */}
-          {adminTab === 'products' && (
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="font-display text-xl">Управление товарами</h3>
-                <Button className="bg-toxic hover:bg-toxic/90 text-background clip-corner gap-2 font-display uppercase text-sm">
-                  <Icon name="Plus" size={14} />
-                  Добавить
-                </Button>
-              </div>
-              <div className="border border-border bg-card clip-corner overflow-hidden">
-                <div className="grid grid-cols-5 px-5 py-3 border-b border-border bg-secondary/50 text-xs uppercase tracking-widest text-muted-foreground">
-                  <div>Название</div><div>Категория</div><div>Цена</div><div>Метка</div><div className="text-right">Действия</div>
-                </div>
-                {PRODUCTS.map((p) => (
-                  <div key={p.id} className="grid grid-cols-5 px-5 py-3 border-b border-border/50 last:border-0 items-center">
-                    <div className="font-display text-sm">{p.name}</div>
-                    <div className="text-xs text-muted-foreground">{p.category}</div>
-                    <div className="font-display text-toxic">{p.price} ₽</div>
-                    <div><span className={`text-[10px] px-2 py-0.5 clip-corner ${tagStyle[p.tag]}`}>{tagLabel[p.tag]}</span></div>
-                    <div className="flex justify-end gap-2">
-                      <button className="h-7 w-7 grid place-items-center border border-border hover:border-toxic/50 clip-corner">
-                        <Icon name="Pencil" size={12} />
-                      </button>
-                      <button className="h-7 w-7 grid place-items-center border border-border hover:border-destructive/50 clip-corner">
-                        <Icon name="Trash2" size={12} className="text-destructive" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Users tab */}
-          {adminTab === 'users' && (
-            <div>
-              <h3 className="font-display text-xl mb-4">Управление пользователями</h3>
-              <div className="border border-border bg-card clip-corner overflow-hidden">
-                <div className="grid grid-cols-4 px-5 py-3 border-b border-border bg-secondary/50 text-xs uppercase tracking-widest text-muted-foreground">
-                  <div>Steam ID</div><div>Никнейм</div><div>Баланс</div><div className="text-right">Действия</div>
-                </div>
-                {RATINGS.slice(0, 5).map((r) => (
-                  <div key={r.rank} className="grid grid-cols-4 px-5 py-3 border-b border-border/50 last:border-0 items-center">
-                    <div className="text-xs text-muted-foreground font-mono">765611980{r.rank}</div>
-                    <div className="font-display text-sm">{r.name}</div>
-                    <div className="font-display text-toxic">{r.rank * 120} ₽</div>
-                    <div className="flex justify-end gap-2">
-                      <button className="text-xs px-2 py-1 border border-border hover:border-toxic/50 clip-corner font-display uppercase">
-                        Пополнить
-                      </button>
-                      <button className="text-xs px-2 py-1 border border-destructive/40 hover:bg-destructive/10 clip-corner font-display uppercase text-destructive">
-                        Бан
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Promos tab */}
-          {adminTab === 'promos' && (
-            <div className="max-w-lg">
-              <h3 className="font-display text-xl mb-4">Промокоды</h3>
-              <div className="border border-border bg-card p-5 clip-corner mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-display text-toxic text-lg">LASTRAID10</span>
-                  <span className="text-xs px-2 py-0.5 bg-toxic/20 text-toxic border border-toxic/30 clip-corner">АКТИВЕН</span>
-                </div>
-                <div className="text-xs text-muted-foreground">Скидка 10% · Без ограничений · Действует до 31.12.2035</div>
-              </div>
-              <Button className="bg-toxic hover:bg-toxic/90 text-background clip-corner gap-2 font-display uppercase text-sm">
-                <Icon name="Plus" size={14} />
-                Создать промокод
-              </Button>
-            </div>
-          )}
-
-          {/* Balance tab */}
-          {adminTab === 'balance' && (
-            <div className="max-w-sm">
-              <h3 className="font-display text-xl mb-4">Пополнение баланса</h3>
-              <div className="border border-border bg-card p-5 clip-corner space-y-4">
-                <div>
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground mb-1 block">Steam ID игрока</label>
-                  <input placeholder="76561198..." className="w-full bg-background border border-border px-3 py-2 text-sm clip-corner text-foreground placeholder:text-muted-foreground outline-none focus:border-toxic/50" />
-                </div>
-                <div>
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground mb-1 block">Сумма (₽)</label>
-                  <input type="number" placeholder="500" className="w-full bg-background border border-border px-3 py-2 text-sm clip-corner text-foreground placeholder:text-muted-foreground outline-none focus:border-toxic/50" />
-                </div>
-                <Button className="w-full bg-toxic hover:bg-toxic/90 text-background font-display uppercase clip-corner gap-2">
-                  <Icon name="Plus" size={16} />
-                  Пополнить
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* Withdraw tab */}
-          {adminTab === 'withdraw' && (
-            <div>
-              <h3 className="font-display text-xl mb-4">Система вывода средств</h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                {[
-                  { id: 1, user: 'ShadowWalker_RU', amount: 3200, method: 'ЮМани', status: 'Ожидает' },
-                  { id: 2, user: 'DarkSniper', amount: 1800, method: 'USDT', status: 'Ожидает' },
-                ].map((w) => (
-                  <div key={w.id} className="border border-border bg-card p-5 clip-corner">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <div className="font-display">{w.user}</div>
-                        <div className="text-xs text-muted-foreground">{w.method}</div>
-                      </div>
-                      <div className="font-display text-xl text-toxic">{w.amount} ₽</div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button size="sm" className="bg-toxic/20 hover:bg-toxic/30 text-toxic border border-toxic/40 clip-corner font-display uppercase text-xs gap-1">
-                        <Icon name="Check" size={12} />Одобрить
-                      </Button>
-                      <Button size="sm" className="bg-destructive/10 hover:bg-destructive/20 text-destructive border border-destructive/30 clip-corner font-display uppercase text-xs gap-1">
-                        <Icon name="X" size={12} />Отклонить
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </section>
-      )}
+      {active === 'Админ панель' && <AdminPanel />}
 
       {/* Footer */}
       <footer className="border-t border-border bg-background/80 mt-8">

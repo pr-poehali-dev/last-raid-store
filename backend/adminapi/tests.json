@@ -1,0 +1,17 @@
+{
+  "tests": [
+    {
+      "name": "Login wrong password returns 401",
+      "method": "POST",
+      "path": "/?action=login",
+      "body": {"password": "wrongpass"},
+      "expectedStatus": 401
+    },
+    {
+      "name": "Get products without token returns 401",
+      "method": "GET",
+      "path": "/?action=get_products",
+      "expectedStatus": 401
+    }
+  ]
+}
